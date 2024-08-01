@@ -1,23 +1,104 @@
+///CANVAS VARIABLES
 let canvas;
 let context;
-let isrunning=false;
+///CANVAS VARIABLES
 
+///GAME LOOP VARIALES
+let isrunning=false;
 let secondsPassed;
 let oldTimeStamp = 0.0;
 let fps;
+///GAME LOOP VARIABLES
 
-const paperimg = new Image();
-const scissorimg= new Image();
-const rockimg = new Image();
+///GAMEOBJECT OBJECT VARIABLE
+function gameObject(id,image)
+{
+    this.id=id;
+    this.image=image;
+    // Transformation matrix stored in a 2d array 
+// [[a c e],
+//  [b d f],
+//  [0 0 1]
+    this.transform= [[0,0,0],[0,0,0],[0,0,0]];
+}
+///GAMEOBJECT OBJECT VARIABLE
+///GAMEOBJECT REFERENCE VARIABLES
+let rockObj;
+let scissorObj;
+let paperObj;
+///GAMEOBJECT REFERENCE VARIABLES
+///ENTITY HOLDER///
+let EntityHolder=[];
 
 
 
-paperimg.src="res/images/paper.png";
-scissorimg.src="res/images/scissors.png";
-rockimg.src="res/images/rock.png";
+const Scene0 = {
+    CreateScene(){
 
-paperimg.width=800;
-paperimg.height=800;
+        let paperimg = new Image();
+        let scissorimg= new Image();
+        let rockimg = new Image();
+    
+        paperimg.src="res/images/paper.png";
+        scissorimg.src="res/images/scissors.png";
+        rockimg.src="res/images/rock.png";
+    
+        paperimg.width=800;
+        paperimg.height=800;
+    
+    
+        rockObj = new gameObject();
+        rockObj.transform[0][2]=-600; // x value
+        rockObj.transform[1][2]=-200 // y value
+    
+        scissorObj= new gameObject();
+        scissorObj.transform[0][2]=0; //x value
+        scissorObj.transform[1][2]=-200; // y value
+    
+        paperObj = new gameObject();
+        paperObj.transform[0][2]=0; //x value
+        paperObj.transform[1][2]=0; //y value 
+    
+        //intializing rock
+        rockObj.id=0;
+        rockObj.image=rockimg;
+        
+        //intializing scissors 
+        scissorObj.id=1;
+        scissorObj.image=scissorimg;
+        
+        //intializing paper 
+        paperObj.id=2;
+        paperObj.image=paperimg;
+    
+    
+        EntityHolder.push(rockObj);
+        EntityHolder.push(scissorObj);
+    //    EntityHolder.push(paperObj);
+
+
+    },
+    DrawScene(){
+        for(var i = 0; i<= EntityHolder.length-1; i++)
+            {
+                let gameRef= EntityHolder[i];
+                window.addEventListener("load",() =>{
+                drawSprite1(gameRef.image,gameRef.transform[0][2],gameRef.transform[1][2]);
+                });
+            }
+    },
+    gameScene()
+    {
+    
+    },
+    ClearScene()
+    {
+
+    },
+};
+
+
+
 
 
 function intialization()
@@ -25,64 +106,40 @@ function intialization()
     canvas = document.getElementById("viewport");
     context = canvas.getContext("2d");
 
-    paperimg.addEventListener("load", () => {
-        drawSprite(paperimg,0,0,1600,1200,0,0,600,600);
+    //All of this should be in a separate draw function
+   /* paperObj.image.addEventListener("load", () => {
+        drawSprite(paperObj.image,0,0,1600,1200,0,0,600,600);
     });
-    scissorimg.addEventListener("load",() =>{
-       drawSprite(scissorimg,0,0,1600,1200,200,0,600,600); 
+    scissorObj.image.addEventListener("load",() =>{
+       drawSprite(scissorObj.image,0,0,1600,1200,250,0,600,600); 
     });
+
+    rockObj.image.addEventListener("load",() =>{
+        drawSprite(rockObj.image,0,0,1600,1200,400,0,600,600); 
+    });*/
     isrunning=true;
+    Scene0.CreateScene();
     if(isrunning===true){
     window.requestAnimationFrame(gameloop);
     }
 }
 
 
-
-function gameloop(timeStamp)
-{
-    calculateGameLoop(timeStamp);
-    frameBuffer();
-    window.requestAnimationFrame(gameloop);
-    /*request animation frame will actually set the frame rate of my canvas 
-    there is no need to actually get the steps of my web browser and then use those 
-    steps to simulate my game logic.
-     */
-    
-}
-
-function drawSprite(CanvasImageSource, x_source,y_source, w_source,h_source, x_destination, y_destination, w_destination, h_destination)
+function drawSprite0(CanvasImageSource, x_source,y_source, w_source,h_source, x_destination, y_destination, w_destination, h_destination)
 {
     context.drawImage(CanvasImageSource,x_source,y_source,w_source,h_source, x_destination, y_destination, w_destination,h_destination);
 
 }
-function drawCircle()
-{
-    context.beginPath();
-    context.arc(0,0,40,0, 2 * Math.PI);
-    context.stroke();
+
+function drawSprite1(CanvasImageSource, x_source, y_source){
+    context.drawImage(CanvasImageSource,x_source,y_source);
 }
 
-function frameBuffer()
-{
-    let randomColor= Math.random() > 0.5? '#ff8080' : '#0099b0';
-    context.fillStyle = randomColor;
-    context.fillRect(100,50,200,175);
-    //Draw things on the screen 
-
-    //Save state or something
-
-    //Clear things on the screen
-}
 
 function calculateGameLoop(timeStamp)
 {
     secondsPassed= (timeStamp - oldTimeStamp) / 1000;
     oldTimeStamp = timeStamp;
-
- //   console.log("Amount of time program has been running:"+secondsPassed);
-  //  console.log("old timestamp:"+ oldTimeStamp);
-    
 
     //calculate fps 
     fps = Math.round(1/secondsPassed);
@@ -96,9 +153,24 @@ function calculateGameLoop(timeStamp)
 }
 
 
-
-
-
+function gameloop(timeStamp)
+{
+    calculateGameLoop(timeStamp);
+    Scene0.gameScene()
+    Scene0.DrawScene();
+    Scene0.ClearScene();
+    if(isrunning==true){
+    window.requestAnimationFrame(gameloop);
+    }
+    /*request animation frame will actually set the frame rate of my canvas 
+    there is no need to actually get the steps of my web browser and then use those 
+    steps to simulate my game logic.
+     */
+    
+}
 
 intialization();
-drawCircle();
+
+canvas.addEventListener("click",(e)=>{
+    console.log("X and Y position of Mouse click:" + e.clientX + "," + e.clientY);
+});
