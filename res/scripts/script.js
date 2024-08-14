@@ -30,6 +30,40 @@ let paperObj;
 ///ENTITY HOLDER///
 let EntityHolder=[];
 
+//UI Object 
+let UI_square= {};
+
+UI_square.x=0;
+UI_square.y=0;
+UI_square.width=0;
+UI_square.height=0;
+UI_square.offsetx=0;
+UI_square.offsety=0;
+
+//UI_square.DrawUIImage= funcion(UI_image)
+//{
+
+//}
+//UI Object constructor 
+function CUI_square(x_,y_,width_,height_,offsetX_,offsetY_)
+{
+    this.x=x_;
+    this.y=y_;
+    this.width=width_;
+    this.height=height_;
+    this.offsetX=offsetX_;
+    this.offsetY=offsetY_;
+};
+
+
+
+//Helper functions 
+function DrawUISquare(UI_square)
+{
+    context.fillRect(UI_square.x,UI_square.y,UI_square.width,UI_square.height);
+    //Hardcoded offset leaving UI_square with offset variable just in case I want to do cool stuff with it.
+    context.clearRect(UI_square.x+5,UI_square.y+5,UI_square.width-10,UI_square.height-10);
+};
 
 
 const Scene0 = {
@@ -73,8 +107,7 @@ const Scene0 = {
     
     
         EntityHolder.push(rockObj);
-        EntityHolder.push(scissorObj);
-    //    EntityHolder.push(paperObj);
+        EntityHolder.push(scissorObj)
 
 
     },
@@ -82,10 +115,20 @@ const Scene0 = {
         for(var i = 0; i<= EntityHolder.length-1; i++)
             {
                 let gameRef= EntityHolder[i];
-                window.addEventListener("load",() =>{
                 drawSprite1(gameRef.image,gameRef.transform[0][2],gameRef.transform[1][2]);
-                });
+            
             }
+    },
+    DrawUI(){
+
+        let UI_S = new CUI_square (240,500,150,150);
+        let UI_S1= new CUI_square (440,500,150,150);
+        let UI_S2= new CUI_square (640,500,150,150);
+
+        DrawUISquare(UI_S);
+        DrawUISquare(UI_S1);
+        DrawUISquare(UI_S2);
+
     },
     gameScene()
     {
@@ -119,8 +162,12 @@ function intialization()
     });*/
     isrunning=true;
     Scene0.CreateScene();
+    
     if(isrunning===true){
-    window.requestAnimationFrame(gameloop);
+        //in order to use this properly I need to calculate the speed at which the canvas is running, convert it to miliseconds then divide it by my desire frame rate
+        // the units of time here are in milliseconds
+        //Creating a 16 ms delay on purpose
+    window.setInterval(gameloop,1000/60);
     }
 }
 
@@ -138,6 +185,8 @@ function drawSprite1(CanvasImageSource, x_source, y_source){
 
 function calculateGameLoop(timeStamp)
 {
+    //I think that when the first time this gets excuted timestamp equals originally zero
+    //In order lock the frame rate, what you need is to make it so that the frame rate equals the same amount of executions in a second
     secondsPassed= (timeStamp - oldTimeStamp) / 1000;
     oldTimeStamp = timeStamp;
 
@@ -155,12 +204,14 @@ function calculateGameLoop(timeStamp)
 
 function gameloop(timeStamp)
 {
-    calculateGameLoop(timeStamp);
+    //calculateGameLoop(performance.now());
     Scene0.gameScene()
     Scene0.DrawScene();
+    Scene0.DrawUI();
     Scene0.ClearScene();
     if(isrunning==true){
-    window.requestAnimationFrame(gameloop);
+ //  window.requestAnimationFrame(gameloop);
+     window.setInterval(gameloop,1000/60);
     }
     /*request animation frame will actually set the frame rate of my canvas 
     there is no need to actually get the steps of my web browser and then use those 
@@ -173,4 +224,9 @@ intialization();
 
 canvas.addEventListener("click",(e)=>{
     console.log("X and Y position of Mouse click:" + e.clientX + "," + e.clientY);
+});
+
+/* you don't even need to add this*/
+document.addEventListener("keyup",(e)=>{
+    console.log(e.key+":button was pressed");
 });
