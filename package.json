@@ -1,0 +1,25 @@
+{
+  "name": "project-rock-paper-scissor",
+  "version": "1.0.0",
+  "description": "javascript browser game",
+  "main": "index.js",
+  "scripts": {
+    "test": "\"echo \\\"Error: no test specified\\\" && exit 1\" ",
+    "build": "webpack"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Jairo411/Project--Rock-Paper-Scissors.git"
+  },
+  "author": "Jairo Alberto Morelli",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/Jairo411/Project--Rock-Paper-Scissors/issues"
+  },
+  "homepage": "https://github.com/Jairo411/Project--Rock-Paper-Scissors#readme",
+  "devDependencies": {
+    "threejs-math": "^0.147.0",
+    "webpack": "^5.94.0",
+    "webpack-cli": "^5.1.4"
+  }
+}
