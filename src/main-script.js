@@ -1,3 +1,10 @@
+import imagePaper from "../public/images/paper.png";
+import imageRock from "../public/images/rock.png";
+import imageScissors from "../public/images/scissors.png";
+import imageSmallPaper from "../public/images/smallpaper.png";
+import imageSmallRock from "../public/images/smallrock.png";
+import imageSmallScissors from "../public/images/smallscissors.png";
+import "./style/style.css"
 const modules = require("./classes");
 
 //GLOBAL VARIABLES
@@ -33,9 +40,9 @@ const Scene0 = {
         let rockimg = new Image();
 
         
-        paperimg.src="../public/images/paper.png";
-        scissorimg.src="../public/images/scissors.png";
-        rockimg.src="../public/images/rock.png";
+        paperimg.src=imagePaper;
+        scissorimg.src=imageScissors;
+        rockimg.src=imageRock;
     
     
         rockObj = new modules.gameObject();
@@ -82,11 +89,11 @@ const Scene0 = {
         //they're not, they peform and serve different functions.
         let UI_Manager=[UI_S,UI_S1,UI_S2];
         let smallpaper= new Image();
-        smallpaper.src="../public/images/smallpaper.png";
+        smallpaper.src=imageSmallPaper;
         let smallrock = new Image();
-        smallrock.src=="../public/images/smallrock.png";
+        smallrock.src=imageSmallRock;
         let smallscissor= new Image();
-        smallscissor.src=="../public/images/smallscissors.png";
+        smallscissor.src=imageSmallScissors;
 
         DrawUISquare(UI_S);
       
@@ -134,8 +141,11 @@ const Scene0 = {
 
 function intialization()
 {
+
+    injectCSS();    
     canvas = document.getElementById("viewport");
     context = canvas.getContext("2d");
+
 
     isrunning=true;
     Scene0.CreateScene();
@@ -184,6 +194,25 @@ function gameloop(timeStamp)
     steps to simulate my game logic.
      */
     
+}
+
+function injectCSS()
+{
+    let style_text = '';
+
+    let style_elements = 
+    document.getElementById("STYLE");
+
+    if(style_elements.length ==0)
+        alert("No Style Tag!");
+    else{
+        for(let i =0; i < style_elements.length; i++)
+            style_text +=style_elements[i].outerHTML;
+
+        style_text = style_text.toString().
+        replace(/\t/g, '').split('\r\n');
+    }
+
 }
 
 intialization();

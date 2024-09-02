@@ -1,8 +1,0 @@
-{
-    "extends": "eslint-config-ali/typescript",
-    "rules": {
-      "no-console": "off",
-      "no-tabs": "off",
-      "no-param-reassign": "off"
-    }
-}
