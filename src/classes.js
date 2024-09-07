@@ -6,7 +6,6 @@ class gameObject{
         this.transform= new threeJsMod.Matrix3();
         this.x=0;
         this.y=0;
-        this.transform.set(0,0,this.x,0,0,this.y,0,0,0);
     }
 
 }
@@ -19,6 +18,7 @@ class UI_Square{
         this.height=height_;
         this.offSetX=offSetX_;
         this.offSetY=offSetY_;
+        this.image= new Image();
     }
     
 

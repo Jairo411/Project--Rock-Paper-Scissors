@@ -25,6 +25,7 @@ let fps;
 ///GAMEOBJECT REFERENCE VARIABLES
 ///ENTITY HOLDER///
 let EntityHolder = [];
+let UIHolder = [];
 //GLOBAL VARIABLES
 
 const Scene0 = {
@@ -33,7 +34,7 @@ const Scene0 = {
 
         let rockObj = new modules.gameObject(0, new Image(600, 600));
         let scissorObj = new modules.gameObject(1, new Image(600, 600));
-        let paperObj = new modules.gameObject(2, new Image(200, 200));
+        let paperObj = new modules.gameObject(2, new Image(600, 600));
 
 
         rockObj.Image.src = imageRock;
@@ -41,33 +42,27 @@ const Scene0 = {
         paperObj.Image.src = imagePaper;
 
 
-        //     rockObj.transform.translate(-600, 200);
-        //     scissorObj.transform.translate(0, -200);
-
-
         //only going to push in two objects 
         EntityHolder.push(rockObj);
         EntityHolder.push(scissorObj);
         //    EntityHolder.push(paperObj);
 
+        ResetOrigin();
 
+        rockObj.transform.translate(500, 200);
+        scissorObj.transform.translate(500, 0);
+
+        this.CreateUI();
     },
-    DrawScene() {
-        for (let i = 0; i < EntityHolder.length; i++) {
-            DrawSprite(EntityHolder[i].Image, EntityHolder[i].x, EntityHolder[i].y);
-        }
-    },
-    UI() {
+    CreateUI() {
 
-        let UI_S = new modules.UI_Square(240, 500, 150, 150);
-        let UI_S1 = new modules.UI_Square(440, 500, 150, 150);
-        let UI_S2 = new modules.UI_Square(640, 500, 150, 150);
-
+        let UI_S = new modules.UI_Square(240, 500, 150, 150, 25, 20);
+        let UI_S1 = new modules.UI_Square(440, 500, 150, 150, 35, 35);
+        let UI_S2 = new modules.UI_Square(640, 500, 150, 150, 35, 10);
 
         //Creating UI objects that use, the rock, paper, scissors assets 
         //They may appear to be the same like my gameObject objects, but 
         //they're not, they peform and serve different functions.
-        let UI_Manager = [UI_S, UI_S1, UI_S2];
         let smallpaper = new Image();
         smallpaper.src = imageSmallPaper;
         let smallrock = new Image();
@@ -75,31 +70,43 @@ const Scene0 = {
         let smallscissor = new Image();
         smallscissor.src = imageSmallScissors;
 
-        DrawUISquare(UI_S);
+
+        UI_S.image = smallpaper;
+        UI_S1.image = smallrock;
+        UI_S2.image = smallscissor;
 
 
-        context.drawImage(smallpaper, 276, 530);
-
-        DrawUISquare(UI_S1);
-
-        context.drawImage(smallrock, 476, 530);
-
-
-        DrawUISquare(UI_S2);
-        context.drawImage(smallscissor, 674, 530);
+        UIHolder.push(UI_S);
+        UIHolder.push(UI_S1);
+        UIHolder.push(UI_S2);
 
     },
     Render() {
-        for (let i = 0; i < EntityHolder[i].length; i++) {
+        //Render GameObjects
+        for (let i = 0; i < EntityHolder.length; i++) {
+  
             DrawSprite(EntityHolder[i].Image, EntityHolder[i].x, EntityHolder[i].y);
-    }
-
+        }
+        //Render UI Objects
+        for (let i = 0; i < UIHolder.length; i++) {
+            DrawUISquare(UIHolder[i]);
+        }
     },
+
     Update() {
-      //scene logic goes here
+        //scene logic goes here
+        for (let i = 0; i < EntityHolder.length; i++) {
+            //New way of accessing all elements of entity holder without 
+            //constantly having to write code to access EntityHolder
+            let tempEntity = EntityHolder[i];
+
+
+            tempEntity.x = tempEntity.transform.elements[6];
+            tempEntity.y = tempEntity.transform.elements[7];
+        }
     },
     ClearScene() {
-
+        // write code here to clear scene
     },
 };
 
@@ -111,25 +118,36 @@ function ResetOrigin() {
     for (let i = 0; i < EntityHolder.length; i++) {
         let resetOrigin = new modules.threeJsMod.Vector2(0, 0);
 
-        resetOrigin.x = EntityHolder[i].Image.width;
-        resetOrigin.y = EntityHolder[i].Image.height;
+        let tempEntity = EntityHolder[i];
 
-        EntityHolder[i].x = resetOrigin.x * -1;
-        EntityHolder[i].y = resetOrigin.y * -1;
+        resetOrigin.x = tempEntity.Image.width;
+        resetOrigin.y = tempEntity.Image.height;
 
-        console.log(EntityHolder[i].x+ " " + EntityHolder[i].y);
+        resetOrigin.x = resetOrigin.x / 2;
+        resetOrigin.y = resetOrigin.y / 2;
+
+        tempEntity.x += resetOrigin.x * -1;
+        tempEntity.y += resetOrigin.y * -1;
+
+        tempEntity.transform.elements[6]=tempEntity.x;
+        tempEntity.transform.elements[7]=tempEntity.y;
+
     }
 }
 
 function DrawSprite(CanvasImageSource_, x_source, y_source) {
-    ResetOrigin();
     context.drawImage(CanvasImageSource_, x_source, y_source, CanvasImageSource_.width, CanvasImageSource_.height);
 }
 
 function DrawUISquare(UI_square) {
+    //Create Box
     context.fillRect(UI_square.x, UI_square.y, UI_square.width, UI_square.height);
     //Hardcoded offset leaving UI_square with offset variable just in case I want to do cool stuff with it.
+    //clear UI box
     context.clearRect(UI_square.x + 5, UI_square.y + 5, UI_square.width - 10, UI_square.height - 10);
+    //Draw image inside box
+    context.drawImage(UI_square.image, UI_square.x + UI_square.offSetX, UI_square.y + UI_square.offSetY, UI_square.image.width, UI_square.image.height);
+
 }
 
 function intialization() {
@@ -174,10 +192,8 @@ function calculateGameLoop(timeStamp) {
 
 function gameloop(timeStamp) {
     //calculateGameLoop(performance.now());
-    Scene0.Render()
     Scene0.Update();
-    Scene0.DrawScene();
-    Scene0.UI();
+    Scene0.Render();
     Scene0.ClearScene();
     if (isrunning == true) {
         //  window.requestAnimationFrame(gameloop);
