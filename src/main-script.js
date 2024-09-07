@@ -32,9 +32,9 @@ const Scene0 = {
     CreateScene() {
 
 
-        let rockObj = new modules.gameObject(0, new Image(600, 600));
-        let scissorObj = new modules.gameObject(1, new Image(600, 600));
-        let paperObj = new modules.gameObject(2, new Image(600, 600));
+        let rockObj = new modules.gameObject(0, new Image(700, 700));
+        let scissorObj = new modules.gameObject(1, new Image(700, 700));
+        let paperObj = new modules.gameObject(2, new Image(700, 700));
 
 
         rockObj.Image.src = imageRock;
@@ -49,8 +49,8 @@ const Scene0 = {
 
         ResetOrigin();
 
-        rockObj.transform.translate(500, 200);
-        scissorObj.transform.translate(500, 0);
+        rockObj.transform.translate(350, 350);
+        scissorObj.transform.translate(650, 350);
 
         this.CreateUI();
     },
@@ -94,7 +94,7 @@ const Scene0 = {
     },
 
     Update() {
-        //scene logic goes here
+        //scene logic for game objects goes here
         for (let i = 0; i < EntityHolder.length; i++) {
             //New way of accessing all elements of entity holder without 
             //constantly having to write code to access EntityHolder
@@ -104,9 +104,20 @@ const Scene0 = {
             tempEntity.x = tempEntity.transform.elements[6];
             tempEntity.y = tempEntity.transform.elements[7];
         }
+      
+    },
+    Events(){
+          //scene logic for UI objects goes here 
+          for (let i =0; i< UIHolder.length; i++)
+            {
+                UIHolder[i].collisionDetection(mouseCoords.pos.x,mouseCoords.pos.y);
+                console.log("I am UI box number: "+i);
+            }
     },
     ClearScene() {
         // write code here to clear scene
+        //Hardcoded screen width and screen height value
+        context.clearRect(0,0,1024,768);
     },
 };
 
@@ -150,7 +161,7 @@ function DrawUISquare(UI_square) {
 
 }
 
-function intialization() {
+function Intialization() {
 
     // refactorCSS();
     canvas = document.getElementsByClassName("viewport")[0];
@@ -191,10 +202,9 @@ function calculateGameLoop(timeStamp) {
 
 
 function gameloop(timeStamp) {
-    //calculateGameLoop(performance.now());
+    Scene0.ClearScene();
     Scene0.Update();
     Scene0.Render();
-    Scene0.ClearScene();
     if (isrunning == true) {
         //  window.requestAnimationFrame(gameloop);
         window.setInterval(gameloop, 1000 / 60);
@@ -230,12 +240,14 @@ function injectCSSIntoHTML(string_) {
     document.body.insertAdjacentHTML("beforeend", string_);
 }
 
-intialization();
+Intialization();
 
 canvas.addEventListener("click", (e) => {
     mouseCoords.pos.x = e.clientX;
     mouseCoords.pos.y = e.clientY;
     console.log("X and Y position of Mouse click:" + mouseCoords.pos.x + "," + mouseCoords.pos.y);
+
+    Scene0.Events()
 });
 
 /* you don't even need to add this*/
